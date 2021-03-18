@@ -44,10 +44,10 @@ CORS must be setup on server:
 
 A sample database with employees was created with the view 'employees'. Then the URI for getting a row entry in our view uses the modifier 'keys='.
 Example:
-  * http://192.168.1.100/javadomino/json-testing.nsf/api/data/collections/name/employees?keys=ID4102
+  * http​&#65279;://192.168.1.100/javadomino/json-testing.nsf/api/data/collections/name/employees?keys=ID4102
 
 Once we get our row, we access document via the json element @link href.
- * http://192.168.1.100/javadomino/json-testing.nsf/api/data/documents/unid/E7617807F07C4A64862586930063AC0D
+ * http​&#65279;://192.168.1.100/javadomino/json-testing.nsf/api/data/documents/unid/E7617807F07C4A64862586930063AC0D
 
 It's a two step action, if you know how to access directly the document, please comment.
 
