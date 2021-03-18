@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+# Lotus Notes/Domino document -> REST data -> React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The example is quite simple and only GETs one document from Notes using Domino Access Service (DAS)
+My setup is Domino Server 9.0.1
 
-## Available Scripts
 
-In the project directory, you can run:
 
-### `npm start`
+## Notes Database
+Your database must be set up for DAS:
+* ACL: allow anonymous read access  (but you can also use credentials, not shown here).
+* Database properties:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+A sample database with employees was created with the view 'employees'. Then the URI for getting a row entry in our view uses the modifier 'keys='.
+Example:
+  * http://192.168.1.100/javadomino/json-testing.nsf/api/data/collections/name/employees?keys=ID4102
 
-### `npm test`
+Once we get our row, we access document via the json element @link href.
+ * http://192.168.1.100/javadomino/json-testing.nsf/api/data/documents/unid/E7617807F07C4A64862586930063AC0D
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+It's a two step action, if you know how to access directly the document, please comment.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## CORS setup on Domino 9.0.1
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+CORS must be setup on server:
+  * Domino server document: Load internet configurations from Server: Enabled
+  * Internet Sites documents: Enabled
+  * Create the Internet Sites doc
+    * On allowed methods section I left the defaults
+    * On Domino Access Services: Enabled Services: Data
+    * Click on Web Site...  button and Create a rule
+       * Add your description (any text)
+       * Type of Rule: HTTP Response Headers
+       * Incoming URL pattern: the path to your test database (NSF)  /test/*
+       * HTTP Response Codes: 200, 201, 204, 206, 304
+       * Then add the Headers:
+        ***
+        * Access-Control-Allow-Origin   :  *
+        * Access-Control-Allow-Headers  : Content-Type,X-HTTP-Method-Override
+        * Access-Control-Expose-Headers : Location
+        ***
+  * restart your http task:    server console:    tell http restart
 
-### `npm run eject`
+  * Since I'm not doing POST operations, I didn't use the Notes.ini setting: HTTPAdditionalRespHeader
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+*Note:* this setup is only for testing. For production servers you must configure your security correctly.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+*Note2:* Domino 10 and up have a different CORS setup, where you only modify the server doc, and add a .json file with the headers. See HCL web site documentation.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Many thanks to Mark Leusink for his post:
+https://linqed.eu/2014/12/15/fun-with-domino-angularjs-and-cors-not-really/
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+##
