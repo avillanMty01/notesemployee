@@ -34,7 +34,7 @@ function App() {
   return (
 
     <div className="App">
-      <p>My Counter</p>
+      <p>Employee name</p>
       <span>{document.FirstName} </span>
       <span>{document.LastName}</span>
     </div>
